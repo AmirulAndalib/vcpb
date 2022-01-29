@@ -29,7 +29,6 @@ def worker():
 
             if info["is_live"]:
                 run(item["on_is_live_error"])
-                queue.task_done()
             else:
                 file_name = f"{info['id']}.{info['ext']}"
                 if file_name not in os.listdir("../downloads"):
@@ -43,7 +42,7 @@ def worker():
                     url=f"https://youtu.be/{info['id']}",
                 )
                 run(item["on_end"])
-                queue.task_done()
+            queue.task_done()
         except Exception as e:
             item["on_error"]["args"][0] = item["on_error"]["args"][0].format(type(e).__name__, e)
             run(item["on_error"])

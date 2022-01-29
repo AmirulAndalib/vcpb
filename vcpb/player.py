@@ -11,15 +11,14 @@ streaming = []
 def worker():
     while True:
         item = queue.get()
-        
+
         if "stream" in item:
             mpv.play(item["url"])
             mpv.wait_for_playback()
-            
+
             if is_streaming():
                 play(stream=True, url=item["url"])
-            
-            queue.task_done()
+
         else:
             run(item["on_start"], quote=True)
             item["log"]["args"][1] = item["log"]["args"][1].format(
@@ -32,7 +31,8 @@ def worker():
             mpv.wait_for_playback()
             run(item["on_end"], quote=True)
             log.delete()
-            queue.task_done()
+
+        queue.task_done()
 
 
 threading.Thread(target=worker, daemon=True).start()
@@ -52,9 +52,8 @@ def stream(url: str):
 
 
 def stop_streaming() -> bool:
-    if is_streaming():
-        del streaming[0]
-        mpv.stop()
-        return True
-    else:
+    if not is_streaming():
         return False
+    del streaming[0]
+    mpv.stop()
+    return True

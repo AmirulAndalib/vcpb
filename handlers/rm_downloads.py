@@ -15,8 +15,7 @@ downloads = os.path.realpath("downloads")
 )
 @errors
 def clear_downloads(_, message: Message):
-    ls_dir = os.listdir(downloads)
-    if ls_dir:
+    if ls_dir := os.listdir(downloads):
         for file in os.listdir(downloads):
             os.remove(os.path.join(downloads, file))
         message.reply_text("<b>✅ Deleted all downloaded files</b>", quote=False)
